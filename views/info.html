@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>shopping_infor</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/superagent"></script>
+</head>
+
+<body>
+	<div class="container-fluid">
+      <div class="row justify-content-around">
+		  <div class="col-4">
+		      <!--  <button type="button" id="load" class="btn btn-primary">加载</button> -->
+			    <div class="row">
+					<div class="col">
+					   <div class="input-group mb-3 justify-content-around">
+						  <input id="search1" type="text" class="form-control" placeholder="catalevel1" aria-label="catalevel1" aria-describedby="search-button">
+					    </div>
+					</div>
+							     
+					<div class="col">
+					    <div class="input-group mb-3 justify-content-around">
+						    <input id="search2" type="text" class="form-control" placeholder="catalevel2" aria-label="catalevel2" aria-describedby="search-button">
+						</div>
+					</div>
+						<div class="col">
+							   <!--  <button type="button" id="all" class="btn btn-primary" href="/all">全选</button> -->
+							    <!-- <button type="button" class="btn btn-secondary" id="upload">上传</button> -->
+							    <div>Items Number:<span class="badge badge-secondary" id="items_num"></span></div>
+					    </div>
+			       </div>
+			 </div>
+	     </div>
+
+
+      <div class="row">
+        <table class="table">
+		   <thead class="thead-dark">
+		    <tr>
+		      <th scope="col" style="width:100px;">upload</a></th>
+		      <th scope="col">product_id</th>
+		      <th scope="col">product_name</th>
+		      <th scope="col">price</th>
+		      <th scope="col">image</th>
+		      <th scope="col">catalevel_1</th>
+		      <th scope="col">catalevel_2</th>
+		      <th scope="col">catalevel_3</th>
+		      <th scope="col">address</th>
+		      <th scope="col">create_time</th>
+		      <th scope="col">cproduct_desc</th>
+		    </tr>
+		  </thead>
+		  <tbody id="info_content">
+		
+		  </tbody>
+	   </table>
+	      </div>
+		       	<nav aria-label="Page navigation example">
+			     <ul class="pagination justify-content-center">
+				    <li class="page-item disabled">
+				      <a class="page-link" href="#" aria-label="Previous">
+				        <span aria-hidden="true">&laquo;</span>
+				      </a>
+					    </li>
+					    <li class="page-item"><a class="page-link" href="#">1</a></li>
+					    <li class="page-item"><a class="page-link" href="#">2</a></li>
+					    <li class="page-item"><a class="page-link" href="#">3</a></li>
+					    <li class="page-item">
+					      <a class="page-link" href="#" aria-label="Next">
+				        <span aria-hidden="true">&raquo;</span>
+				      </a>
+				    </li>
+		          </ul>
+	            </nav>
+	     <!-- container -->
+      </div>
+  
+    <script>
+    	// 页面启动，加载信息
+    	$(document).ready(function(){    
+    	     var name="manager";
+    		 var id=1;
+    		 // $("#load").click(function(){
+    		  $.ajax({
+              	 method:"get",
+              	 url:"/load",
+              	 data:{name,id},
+              	 success:function(product){
+              	 	 product = product.product;
+                     console.log(product);
+                     console.log(product.length);
+                     // var num=product.length;
+                     // var mo=Math.floor(num/30);
+                     // var yu=num%30;
+                     // console.log(mo,yu);
+                     $("#items_num").text(product.length);
+                     for (i=0; i<product.length; i++){
+                        $("#info_content").append(
+	                 	"<tr>"
+	                 	+"<td class='upload'>"
+			            +"<button type='button' class='btn btn-outline-secondary upload_button' id='"+product[i].product_id+"'>"+"上传"+"</button>"
+		                +"</td>"
+	                 	+"<th scope='row' class='id'>"
+	                 	+product[i].product_id
+				        +"</th>"
+				        +"<td class='name'>"
+				        +product[i].product_name
+				        +"</td>"
+				        +"<td class='price'>"
+				        +product[i].price
+				        +"</td>"
+				        +"<td class='image'>"
+				        +"<img style='width:50px;height:50px;' src='"+product[i].image_name+"'>"
+				        +"</td>"
+				        +"<td class='cata_level1'>"
+				        +product[i].catalog_level1
+				        +"</td>"
+				        +"<td class='cata_level2'>"
+				        +product[i].catalog_level2
+				        +"</td class='cata_level2'>"
+				        +"<td class='cata_level3'>"
+				        +product[i].catalog_level3
+				        +"</td>"
+				        +"<td class='address'>"
+				        +product[i].address
+				        +"</td>"
+				        +"<td class='create_time'>"
+				        +product[i].create_time
+				        +"<td class='product_desc'>"
+				        +product[i].product_desc
+				        +"</td>"
+				        +"</tr>"
+			               );
+                          }
+		                 }
+		              });
+		    		 // });
+ 
+           // search1
+            $("#search1").keyup(function(){
+                       var search1_value = $("#search1").val();
+                       console.log(search1_value);
+                       $.ajax({
+                       	 method:"get",
+                       	 url:"/search1",
+                       	 data:{search1_value},
+                       	 success:function(product){
+                       	 	product=product.product;
+                       	 	console.log(product.length);
+                       	 	$("#items_num").text(product.length);
+                       	    $("#info_content").empty();
+	                        for (i=0; i<product.length; i++){
+	                        $("#info_content").append(
+		                 	"<tr>"
+		                 	+"<td class='upload'>"
+			                +"<button type='button' class='btn btn-outline-secondary upload_button' id='"+product[i].product_id+"'>"+"上传"+"</button>"
+		                    +"</td>"
+		                 	+"<th scope='row' class='id'>"
+		                 	+product[i].product_id
+					        +"</th>"
+					        +"<td class='name'>"
+					        +product[i].product_name
+					        +"</td>"
+					        +"<td class='price'>"
+					        +product[i].price
+					        +"</td>"
+					        +"<td class='image'>"
+					        +"<img style='width:50px;height:50px;' src='"+product[i].image_name+"'>"
+					        +"</td>"
+					        +"<td class='cata_level1'>"
+					        +product[i].catalog_level1
+					        +"</td>"
+					        +"<td class='cata_level2'>"
+					        +product[i].catalog_level2
+					        +"</td>"
+					        +"<td class='cata_level3'>"
+					        +product[i].catalog_level3
+					        +"</td>"
+					        +"<td class='address'>"
+					        +product[i].address
+					        +"</td>"
+					        +"<td class='create_time'>"
+					        +product[i].create_time
+					        +"<td class='product_desc'>"
+					        +product[i].product_desc
+					        +"</td>"
+					        +"</tr>"
+			               );    
+			               }          
+                       	 }
+                   });
+               });
+
+           // search2
+             $("#search2").keyup(function(){
+             	       var search2_value = $("#search2").val();
+                       console.log(search2_value);
+                       $.ajax({
+                       	method:"get",
+                       	url:"/search2",
+                       	data:{search2_value},
+                       	success:function(product){
+                       	product=product.product;
+                        console.log(product);
+                        $("#items_num").text(product.length);
+                        $("#info_content").empty();
+	                        for (i=0; i<product.length; i++){
+	                        $("#info_content").append(
+		                 	"<tr>"
+		                 	+"<td class='upload'>"
+			                +"<button type='button' class='btn btn-outline-secondary upload_button' id='"+product[i].product_id+"'>"+"上传"+"</button>"
+		                    +"</td>"
+		                 	+"<th scope='row' class='id'>"
+		                 	+product[i].product_id
+					        +"</th>"
+					        +"<td class='name'>"
+					        +product[i].product_name
+					        +"</td>"
+					        +"<td class='price'>"
+					        +product[i].price
+					        +"</td>"
+					        +"<td class='image'>"
+					        +"<img style='width:50px;height:50px;' src='"+product[i].image_name+"'>"
+					        +"</td>"
+					        +"<td class='cata_level1'>"
+					        +product[i].catalog_level1
+					        +"</td>"
+					        +"<td class='cata_level2'>"
+					        +product[i].catalog_level2
+					        +"</td class='cata_level2'>"
+					        +"<td class='cata_level3'>"
+					        +product[i].catalog_level3
+					        +"</td>"
+					        +"<td class='address'>"
+					        +product[i].address
+					        +"</td>"
+					        +"<td class='create_time'>"
+					        +product[i].create_time
+					        +"<td class='product_desc'>"
+					        +product[i].product_desc
+					        +"</td>"
+					        +"</tr>"
+			               );    
+			               }
+
+                       	}
+                    });
+             });
+
+
+
+           // 全选
+           $("#all").click(function(){
+                  if($(this).text() == "全选"){
+
+                  	  $(".form-check-input").attr("checked",true);
+                  	  $(this).text("取消");
+
+                  }else{
+                  	 $(".form-check-input").attr("checked",false);
+                  	 $(this).text("全选");
+
+                  }
+           });
+
+           // 上传
+           $("#info_content").on("click",".upload_button",function(){
+                $(this).removeClass('btn-outline-secondary');
+				$(this).addClass('btn-success');
+			    $(this).text("已上传");
+
+                // console.log($(this));
+                var title = $(this).parent().siblings(".name").text();
+                var cata =$(this).parent().siblings(".cata_level2").text();
+                var price = $(this).parent().siblings(".price").text();
+                var img = $(this).parent().siblings(".image").children().attr("src");
+                var tag = $(this).parent().siblings(".product_desc").text();
+                console.log(title);
+                console.log(cata);
+                console.log(price);
+                console.log(img);
+                console.log(tag);
+			    // var attr = new Array();
+                // for (i=0;i<dom.length;i++){
+                // 	console.log(dom[i]);
+                // var title = dom[i].children();
+                // console.log(title);
+                // var product_type=
+                //     console.log (title);
+                // var product_type = dom[i].catalevel_level2;
+                // var price = dom[i].price;
+                // var img = dom[i].images;
+				
+                // }
+
+
+                //$.ajax({
+				// 	method:"POST",
+				// 	datatype: 'json',
+				// 	url:"/api",
+			    //contentType: "application/json",
+				// 	data:{
+				// 	},
+				// 	success:function (res) {
+				// 		console.log("查询成功"+res);
+				// 	},
+				// 	error:function(data,type, err){
+				// 		console.log("ajax错误类型："+type);
+				// 		console.log(err);
+				// 	}
+				// });
+
+
+
+                $.ajax({
+					method:"POST",
+					dataType: 'json',
+					url:"/api",
+					data:{
+					"product":
+				         {
+				             "title" : title,
+				             "body_html":tag,
+				             "variants":[
+				                 {
+				                     "option1" : cata,
+				                     "price" : price,
+				                     "sku" : "100"
+				                 }
+				             ],
+				             "product_type" :"goods",
+				             "images": [
+				                  {
+				                     "src": img
+				                  }
+				                       ]
+				         }
+
+					},
+					success:function (res) {
+						console.log("请求发送成功"+res)
+
+
+					},
+					error:function(data,type, err){
+						console.log("ajax错误类型："+type);
+						console.log(err);
+						alert("上传失败！")
+					}
+
+				});
+
+
+                
+    //             $.ajax({
+				// 	method:"POST",
+				// 	datatype: 'json',
+				// 	url:"/api",
+				// 	//让请求不带cookie
+				// 	crossDomain: true,
+				// 	data:{
+				//        "product":
+				// 	         {
+				// 	             "title" : title, 
+				// 	             "body_html":tag,
+				// 	             "variants":[
+				// 	                 {
+				// 	                     "option1" : product_type,
+				// 	                     "price" : price,
+				// 	                     "sku" : "100"
+				// 	                 }
+				// 	             ],
+				// 	             "images": [
+				// 	                  {
+				// 	                     "src": img
+				// 	                  }
+				// 	                       ]
+					                 
+
+				// 	         }
+					     
+				// 	},
+				// 	success:function (res) {
+				// 		console.log("查询成功"+res);
+
+				// 	},
+				// 	error:function(data,type, err){
+				// 		console.log("ajax错误类型："+type);
+				// 		console.log(err);
+				// 	}
+
+				// });
+           });
+    	});
+
+
+    </script> 
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>
